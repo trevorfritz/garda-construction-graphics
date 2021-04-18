@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Fritz.Core;
 using Newtonsoft.Json;
 
 namespace GardaUploadConsole
@@ -39,6 +42,7 @@ namespace GardaUploadConsole
                 actions.Run();
             }
 
+            Console.WriteLine(string.Empty);
             Console.WriteLine("OK");
         }
 
@@ -138,12 +142,12 @@ namespace GardaUploadConsole
         }
     }
 
-    
     public class Uploader
     {
         UploadArguments arguments;
-        BlobServiceClient toRoot;
         DirectoryInfo fromRoot;
+        BlobServiceClient toService;
+        BlobContainerClient toContainer;
         UploadCounts counts;
 
         public Uploader()
@@ -158,8 +162,10 @@ namespace GardaUploadConsole
                 CountFiles(fromRoot);
                 DisplayPreCounts();
                 FixVersion();
-                //CreateRootContainer();
-                UploadFolder(fromRoot, GetContainerFromFolder(fromRoot));
+                CreateMainContainer();
+                counts.Duration = Stopwatch.StartNew();
+                UploadFolder(fromRoot);
+                Console.WriteLine("done");
             }
             catch (Exception exception)
             {
@@ -172,22 +178,58 @@ namespace GardaUploadConsole
         {
             this.arguments = arguments;
             fromRoot = new DirectoryInfo(arguments.FromPath);
-            toRoot = new BlobServiceClient(arguments.ToConnectionString);
+            toService = new BlobServiceClient(arguments.ToConnectionString);
             counts = new UploadCounts();
             Console.WriteLine("Uploading blobs:");
             Console.WriteLine($"  from {fromRoot.FullName}");
-            Console.WriteLine($"  to {toRoot.AccountName}");
+            Console.WriteLine($"  to {toService.AccountName}/{arguments.ToContainer}");
         }
 
-        //private void CreateRootContainer()
-        //{
-        //    toContainerRoot = toRoot.GetBlobContainerClient(arguments.ToContainer);
-        //    var createResult = toContainerRoot.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-        //    if (createResult != null)
-        //    {
-        //        Console.WriteLine($"Container '{toContainerRoot.Name}' created with public access");
-        //    }
-        //}
+        private void CreateMainContainer()
+        {
+            toContainer = toService.GetBlobContainerClient(arguments.ToContainer);
+            if (toContainer.Exists())
+            {
+                toContainer.Delete();
+                Console.WriteLine("  Delete container operation started (may take several minutes)");
+            }
+            int failedCount = 0;
+            while (failedCount >= 0)
+            {
+                Console.Write("  ...creating container...");
+                try
+                {
+                    var result = toContainer.Create(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+                    Console.WriteLine("OK");
+                    failedCount = -1;
+                }
+                catch (Exception)
+                {
+                    failedCount++;
+                    var spinner = default(string);
+                    switch (failedCount % 4)
+                    {
+                        case 1:
+                            spinner = "/";
+                            break;
+                        case 2:
+                            spinner = "-";
+                            break;
+                        case 3:
+                            spinner = "\\";
+                            break;
+                        default:
+                            spinner = "|";
+                            break;
+                    }
+                    Console.Write($"\r{spinner}");
+                }
+
+                if (failedCount == 1000) throw new ApplicationException("Timeout waiting for container to be deleted.");
+
+                Thread.Sleep(500);
+            }
+        }
 
         /// <summary>
         /// Sets the default version of the service API.
@@ -207,17 +249,17 @@ namespace GardaUploadConsole
         private void FixVersion()
         {
             var targetVersion = "2020-06-12";
-            var properties = toRoot.GetProperties();
+            var properties = toService.GetProperties();
             if (properties.Value.DefaultServiceVersion != targetVersion)
             {
                 var previousVersion = properties.Value.DefaultServiceVersion;
                 properties.Value.DefaultServiceVersion = targetVersion;
-                toRoot.SetProperties(properties);
-                Console.WriteLine($"Upgraded API version: {previousVersion} --> {targetVersion}");
+                toService.SetProperties(properties);
+                Console.WriteLine($"  Upgraded API version: {previousVersion} --> {targetVersion}");
             }
             else
             {
-                Console.WriteLine($"Current API version: {properties.Value.DefaultServiceVersion}");
+                Console.WriteLine($"  Current API version: {properties.Value.DefaultServiceVersion}");
             }
         }
 
@@ -232,31 +274,48 @@ namespace GardaUploadConsole
 
         private void DisplayPreCounts()
         {
-            Console.WriteLine($"Found {counts.FileCountToUpload} file(s) to upload");
+            Console.WriteLine($"  Found {counts.FileCountToUpload} file(s) to upload");
         }
 
-        private void UploadFolder(DirectoryInfo from, BlobContainerClient toPath)
+        private void UploadFolder(DirectoryInfo from)
         {
             foreach (var file in from.GetFiles())
             {
-                toPath.UploadBlob(Path.GetFileName(file.FullName), file.OpenRead());
-                Console.WriteLine($"Uploaded '{file.Name}'");
+                var blobName = $"{GetContainerPathFromFolder(from)}/{Path.GetFileName(file.FullName)}";
+                var blob = toContainer.GetBlobClient(blobName);
+                blob.Upload(
+                    file.OpenRead(), 
+                    new BlobHttpHeaders { ContentType = MediaTypes.FromExtension(Path.GetExtension(file.FullName)).ToString() }
+                );
+                counts.FileCountUploaded++;
+                //if ((counts.Duration.Elapsed - counts.LastUserUpdate) >= TimeSpan.FromSeconds(1) || counts.LastUserUpdate == TimeSpan.Zero)
+                //{
+                    Console.Write($"\r  ...uploading ({counts.FileCountUploaded} of {counts.FileCountToUpload})...");
+                //}
+                counts.LastUserUpdate = counts.Duration.Elapsed;
             }
 
             foreach (var subFolder in from.GetDirectories())
             {
-                UploadFolder(subFolder, GetContainerFromFolder(subFolder));
+                UploadFolder(subFolder);
             }
         }
 
-        private BlobContainerClient GetContainerFromFolder(DirectoryInfo folder)
+        //private void SetContentType(string blobName, string extension)
+        //{
+        //    item.Properties.ContentType = "";
+        //    var blob = toContainer.GetBlobClient(blobName);
+        //    //blob.SetHttpHeaders = new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType =  } }
+        //}
+
+        private string GetContainerPathFromFolder(DirectoryInfo folder)
         {
             var relative = Path.GetRelativePath(fromRoot.Parent.FullName, folder.FullName);
             relative = relative.Replace('\\', '/');
-            var container = toRoot.GetBlobContainerClient(relative);
-            container.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+            //var container = toService.GetBlobContainerClient(relative);
+            //container.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
             //relative = "/" + relative;
-            return container;
+            return relative;
         }
     }
 
@@ -265,11 +324,14 @@ namespace GardaUploadConsole
         public string Name { get; set; } = string.Empty;
         public string FromPath { get; set; } = string.Empty;
         public string ToConnectionString { get; set; } = string.Empty;
-        //public string ToContainer { get; set; } = string.Empty;
+        public string ToContainer { get; set; } = string.Empty;
     }
 
     public class UploadCounts
     {
         public int FileCountToUpload { get; set; }
+        public int FileCountUploaded { get; set; }
+        public Stopwatch Duration { get; set; }
+        public TimeSpan LastUserUpdate { get; set; }
     }
 }
