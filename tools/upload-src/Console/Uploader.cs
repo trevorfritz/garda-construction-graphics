@@ -20,7 +20,7 @@ namespace BlobConsoleUpload
         {
         }
 
-        public void Run(UploadArguments arguments)
+        public void Run(UploadArguments arguments, bool delete = true)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace BlobConsoleUpload
                 CountFiles(fromRoot);
                 DisplayPreCounts();
                 FixVersion();
-                CreateMainContainer();
+                CreateMainContainer(delete);
                 counts.Duration = Stopwatch.StartNew();
                 UploadFolder(fromRoot);
                 Console.WriteLine("done");
@@ -51,10 +51,10 @@ namespace BlobConsoleUpload
             Console.WriteLine($"  to {toService.AccountName}/{arguments.ToContainer}");
         }
 
-        private void CreateMainContainer()
+        private void CreateMainContainer(bool delete)
         {
             toContainer = toService.GetBlobContainerClient(arguments.ToContainer);
-            if (toContainer.Exists())
+            if (toContainer.Exists() && delete)
             {
                 toContainer.Delete();
                 Console.WriteLine("  Delete container operation started (may take several minutes)");
@@ -65,7 +65,7 @@ namespace BlobConsoleUpload
                 Console.Write("  ...creating container...");
                 try
                 {
-                    var result = toContainer.Create(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+                    var result = toContainer.CreateIfNotExists(PublicAccessType.Blob);
                     Console.WriteLine("OK");
                     failedCount = -1;
                 }

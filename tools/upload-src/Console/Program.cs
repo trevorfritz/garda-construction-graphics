@@ -32,7 +32,12 @@ namespace BlobConsoleUpload
             }
             else if (args[0] == "run")
             {
-                actions.Run();
+                var delete = true;
+                if (args.Length == 2)
+                {
+                    if (args[1] == "--no-delete") delete = false;
+                }
+                actions.Run(delete);
             }
 
             Console.WriteLine(string.Empty);
@@ -47,7 +52,7 @@ namespace BlobConsoleUpload
             Console.WriteLine("  openfolder - opens folder containing configuration files (so you can manage them)");
             Console.WriteLine("  open - opens an argument file so you can edit it");
             Console.WriteLine("  list - opens folder containing configuration files (so you can manage them)");
-            Console.WriteLine("  run - executes an upload into blob account specified by the file");
+            Console.WriteLine("  run - executes an upload into blob account specified by the file.  Use --no-delete switch to skip the delete process.");
         }
     }
 }

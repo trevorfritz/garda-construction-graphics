@@ -51,14 +51,14 @@ namespace BlobConsoleUpload
             File.Delete(path);
         }
 
-        public void Run()
+        public void Run(bool delete = true)
         {
             var file = UserSelectFile();
             if (file != null)
             {
                 var args = JsonConvert.DeserializeObject<UploadArguments>(File.ReadAllText(file));
                 var uploader = new Uploader();
-                uploader.Run(args);
+                uploader.Run(args, delete);
             }
         }
 
