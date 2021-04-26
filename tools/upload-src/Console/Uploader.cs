@@ -116,16 +116,16 @@ namespace BlobConsoleUpload
         {
             var targetVersion = "2020-06-12";
             var properties = toService.GetProperties();
-            if (properties.Value.DefaultServiceVersion != targetVersion)
+            var previousVersion = properties.Value.DefaultServiceVersion;
+            if (previousVersion != targetVersion)
             {
-                var previousVersion = properties.Value.DefaultServiceVersion;
                 properties.Value.DefaultServiceVersion = targetVersion;
                 toService.SetProperties(properties);
                 Console.WriteLine($"  Upgraded API version: {previousVersion} --> {targetVersion}");
             }
             else
             {
-                Console.WriteLine($"  Current API version: {properties.Value.DefaultServiceVersion}");
+                Console.WriteLine($"  Current API version: {previousVersion}");
             }
         }
 
