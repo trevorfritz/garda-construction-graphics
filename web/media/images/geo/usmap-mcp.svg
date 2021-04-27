@@ -1,3 +1,11 @@
+<!-- 
+  Source: https://github.com/achord/SVG-US-MAP 
+  US Bounding Rectangle (latitude & longitude): 
+    top = 50.2
+    right = -66.95
+    bottom = 24.7
+    left = -124.75
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 599.96 327.28">
   <defs>
     <style>
