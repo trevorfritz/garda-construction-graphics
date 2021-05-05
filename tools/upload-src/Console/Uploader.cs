@@ -151,7 +151,7 @@ namespace BlobConsoleUpload
                 var blob = toContainer.GetBlobClient(blobName);
                 blob.Upload(
                     file.OpenRead(), 
-                    new BlobHttpHeaders { ContentType = MediaTypes.FromExtension(Path.GetExtension(file.FullName)).ToString() }
+                    new BlobHttpHeaders { ContentType = MediaTypes.FromExtension(Path.GetExtension(file.FullName)).ToString(), ContentDisposition = "attachment" }
                 );
                 counts.FileCountUploaded++;
                 //if ((counts.Duration.Elapsed - counts.LastUserUpdate) >= TimeSpan.FromSeconds(1) || counts.LastUserUpdate == TimeSpan.Zero)
