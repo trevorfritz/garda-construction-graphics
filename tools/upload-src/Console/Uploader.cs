@@ -131,7 +131,7 @@ namespace BlobConsoleUpload
 
         private void CountFiles(DirectoryInfo folder)
         {
-            counts.FileCountToUpload += folder.GetFiles().Length;
+            counts.FileCountToProcess += folder.GetFiles().Length;
             foreach (var sub in folder.GetDirectories())
             {
                 CountFiles(sub);
@@ -140,7 +140,7 @@ namespace BlobConsoleUpload
 
         private void DisplayPreCounts()
         {
-            Console.WriteLine($"  Found {counts.FileCountToUpload} file(s) to upload");
+            Console.WriteLine($"  Found {counts.FileCountToProcess} file(s) to upload");
         }
 
         private void UploadFolder(DirectoryInfo from)
@@ -149,21 +149,40 @@ namespace BlobConsoleUpload
             {
                 var blobName = $"{GetContainerPathFromFolder(from)}/{Path.GetFileName(file.FullName)}";
                 var blob = toContainer.GetBlobClient(blobName);
-                blob.Upload(
-                    file.OpenRead(), 
-                    new BlobHttpHeaders { ContentType = MediaTypes.FromExtension(Path.GetExtension(file.FullName)).ToString(), ContentDisposition = "attachment" }
-                );
-                counts.FileCountUploaded++;
-                //if ((counts.Duration.Elapsed - counts.LastUserUpdate) >= TimeSpan.FromSeconds(1) || counts.LastUserUpdate == TimeSpan.Zero)
-                //{
-                    Console.Write($"\r  ...uploading ({counts.FileCountUploaded} of {counts.FileCountToUpload})...");
-                //}
+
+                // determine if local is newer
+                var exists = blob.Exists();
+
+                if (exists == false || (exists == true && file.LastWriteTimeUtc > blob.GetProperties().Value.LastModified))
+                {
+                    var type = MediaTypes.FromExtension(Path.GetExtension(file.FullName));
+                    var headers = new BlobHttpHeaders { ContentType = type.ToString() };
+                    FixContentDisposition(headers, type);
+                    blob.Upload(
+                        file.OpenRead(),
+                        headers
+                    );
+                    counts.FileCountUploaded++;
+                }
+
+                counts.FileCountProcessed++;
+                Console.Write($"\r  ...processing ({counts.FileCountProcessed} of {counts.FileCountToProcess}) ({counts.FileCountUploaded} uploaded)...");
                 counts.LastUserUpdate = counts.Duration.Elapsed;
             }
 
             foreach (var subFolder in from.GetDirectories())
             {
                 UploadFolder(subFolder);
+            }
+        }
+
+
+        private void FixContentDisposition(BlobHttpHeaders headers, MediaType type)
+        {
+            // sets the content disposition on PDFs to favor downloading rather than viewing in the browser
+            if (type == MediaTypes.ApplicationPDF)
+            {
+                headers.ContentDisposition = "attachment";
             }
         }
 

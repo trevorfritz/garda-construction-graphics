@@ -51,7 +51,7 @@ namespace BlobConsoleUpload
             File.Delete(path);
         }
 
-        public void Run(bool delete = true)
+        public void Run(bool delete = false)
         {
             var file = UserSelectFile();
             if (file != null)
