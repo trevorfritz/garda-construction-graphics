@@ -149,20 +149,34 @@ namespace BlobConsoleUpload
             {
                 var blobName = $"{GetContainerPathFromFolder(from)}/{Path.GetFileName(file.FullName)}";
                 var blob = toContainer.GetBlobClient(blobName);
+                var type = MediaTypes.FromExtension(Path.GetExtension(file.FullName));
+                var headers = new BlobHttpHeaders { ContentType = type.ToString() };
 
-                // determine if local is newer
+                // upload only if newer
                 var exists = blob.Exists();
-
                 if (exists == false || (exists == true && file.LastWriteTimeUtc > blob.GetProperties().Value.LastModified))
                 {
-                    var type = MediaTypes.FromExtension(Path.GetExtension(file.FullName));
-                    var headers = new BlobHttpHeaders { ContentType = type.ToString() };
-                    FixContentDisposition(headers, type);
                     blob.Upload(
                         file.OpenRead(),
                         headers
                     );
                     counts.FileCountUploaded++;
+                }
+
+                // SPECIAL CASE: upload another blob with .download suffix for PDFs only
+                if (type == MediaTypes.ApplicationPDF)
+                {
+                    blob = toContainer.GetBlobClient(blobName + ".download");
+                    headers.ContentDisposition = "attachment";
+
+                    exists = blob.Exists();
+                    if (exists == false || (exists == true && file.LastWriteTimeUtc > blob.GetProperties().Value.LastModified))
+                    {
+                        blob.Upload(
+                            file.OpenRead(),
+                            headers
+                        );
+                    }
                 }
 
                 counts.FileCountProcessed++;
@@ -176,30 +190,10 @@ namespace BlobConsoleUpload
             }
         }
 
-
-        private void FixContentDisposition(BlobHttpHeaders headers, MediaType type)
-        {
-            // sets the content disposition on PDFs to favor downloading rather than viewing in the browser
-            if (type == MediaTypes.ApplicationPDF)
-            {
-                headers.ContentDisposition = "attachment";
-            }
-        }
-
-        //private void SetContentType(string blobName, string extension)
-        //{
-        //    item.Properties.ContentType = "";
-        //    var blob = toContainer.GetBlobClient(blobName);
-        //    //blob.SetHttpHeaders = new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType =  } }
-        //}
-
         private string GetContainerPathFromFolder(DirectoryInfo folder)
         {
             var relative = Path.GetRelativePath(fromRoot.Parent.FullName, folder.FullName);
             relative = relative.Replace('\\', '/');
-            //var container = toService.GetBlobContainerClient(relative);
-            //container.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-            //relative = "/" + relative;
             return relative;
         }
     }
