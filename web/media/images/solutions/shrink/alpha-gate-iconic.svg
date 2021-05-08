@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg 
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 500 500">
+
+    <g id="layer1">
+        <g id="g7">
+            <rect id="backdrop"
+                  style="fill:currentColor;stroke:currentColor;stroke-width:1;stroke-linecap:round;paint-order:stroke fill markers"
+                  x="0"
+                  y="0"
+                  width="500"
+                  height="500"
+                  rx="20" />
+        </g>
+        <g id="g846">
+            <g id="g904"
+               transform="matrix(1.8316867,0,0,1.8316867,78.904833,40.541519)">
+                <path style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                      d="m 112.25893,56.50744 -0.0945,6.472841 h 5.29167 l 0.6928,-1.657679 0.1104,-1.50787 -0.15779,-1.568066 -0.78715,-1.739226 z"
+                      id="path873" />
+                <path style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                      d="m 112.33054,94.470425 -0.0945,6.472845 h 5.29167 l 0.6928,-1.657683 0.1104,-1.50787 -0.15779,-1.568066 -0.78715,-1.739226 z"
+                      id="path873-1" />
+                <rect style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+                      id="rect895"
+                      width="18.449951"
+                      height="165.67169"
+                      x="117.64509"
+                      y="28.39546" />
+                <path style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                      d="m 117.64509,194.06715 c -2.17633,0.0134 -3.41947,0.45943 -4.72372,1.45721 v 2.77292 h 27.92201 l -0.0591,-2.80091 c -1.11342,-0.9513 -2.6236,-1.49048 -4.68929,-1.42922 z"
+                      id="path897" />
+            </g>
+            <path style="fill:none;stroke:#ffffff;stroke-width:9.36811;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                  d="m 308.68267,149.67284 -172.9304,0.92509 c -10.29758,-0.0646 -14.92957,9.35823 -14.74494,17.94197 l 0.0945,32.80018 c -0.17225,9.86828 5.24079,18.3162 15.40658,18.12888 h 171.45724 z"
+                  id="path855" />
+        </g>
+    </g>
+</svg>
