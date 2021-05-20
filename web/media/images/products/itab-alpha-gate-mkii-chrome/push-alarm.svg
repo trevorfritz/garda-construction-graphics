@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns="http://www.w3.org/2000/svg"
+     width="148"
+     height="135"
+     viewBox="0 0 148 135"
+     version="1.1"
+     id="push-alarm-svg">
+    <defs id="defs">
+        <marker
+             style="overflow:visible"
+             id="entrance-arrow-marker"
+             refX="0.0"
+             refY="0.0"
+             orient="auto">
+            <path
+                 transform="scale(0.2)"
+                 style="fill:lime;stroke:lime;stroke-width:1pt;stroke-opacity:1"
+                 d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+                 id="path1047" />
+        </marker>
+        <marker
+             style="overflow:visible"
+             id="exit-arrow-marker"
+             refX="0.0"
+             refY="0.0"
+             orient="auto">
+            <path
+                 transform="scale(0.2)"
+                 style="fill:red;stroke:red;stroke-width:1pt;stroke-opacity:1"
+                 d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+                 id="path4" />
+        </marker>
+        <marker
+             style="overflow:visible"
+             id="Post"
+             refX="0"
+             refY="0"
+             orient="auto">
+            <circle
+                 r="2.5"
+                 id="circle2"
+                 cx="0"
+                 cy="0"
+                 style="stroke:black;stroke-opacity:1" />
+        </marker>
+    </defs>
+    <g
+         id="gate-swing"
+         style="display:inline">
+        <path
+             style="display:inline;fill:none;stroke:#797979;stroke-width:0.228387;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.228387, 0.68516;stroke-dashoffset:0;stroke-opacity:1"
+             d="m 74.788099,56.206614 c -0.150328,10.409424 8.477519,20.020139 16.387545,19.922062"
+             id="gate-swing-left" />
+    </g>
+    <g
+         id="exit"
+         style="display:inline">
+        <path
+             style="fill:none;fill-opacity:0.25;stroke:red;stroke-width:3.95789;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#exit-arrow-marker)"
+             d="M 97.420203,16.16022 V 53.156507"
+             id="exit-arrow" />
+        <path
+             style="fill:none;fill-opacity:0.25;stroke:red;stroke-width:1.5;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="m 95.191388,61.212349 4.419417,4.419417"
+             id="path876" />
+        <path
+             style="display:inline;fill:none;fill-opacity:0.25;stroke:red;stroke-width:1.5;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="M 99.699193,61.256543 95.279776,65.67596"
+             id="path876-5" />
+    </g>
+    <g
+         id="rails"
+         style="display:inline">
+        <path
+             style="fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Post);marker-mid:url(#Post);marker-end:url(#Post);paint-order:normal"
+             d="M 7.9593898,128.09897 V 56.098975 H 31.95939 V 8.0989747"
+             id="railing-left" />
+        <path
+             style="fill:none;stroke:black;stroke-width:0.96;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+             d="m 31.95939,56.098975 h 40"
+             id="gate-left" />
+        <path
+             style="fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Post);marker-mid:url(#Post);marker-end:url(#Post);paint-order:normal"
+             d="M 140.14249,128.18529 V 56.1853 h -24 V 8.1852985"
+             id="railing-right" />
+        <path
+             style="fill:none;stroke:black;stroke-width:0.96;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+             d="M 116.14249,56.1853 90.320162,76.255737"
+             id="gate-right" />
+    </g>
+</svg>

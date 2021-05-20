@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns="http://www.w3.org/2000/svg"
+     width="148"
+     height="135"
+     viewBox="0 0 148 135"
+     version="1.1"
+     id="base-layout-svg">
+    <defs
+         id="defs">
+        <marker
+             style="overflow:visible"
+             id="Post"
+             refX="0"
+             refY="0"
+             orient="auto">
+            <circle
+                 r="2.5"
+                 id="circle2"
+                 cx="0"
+                 cy="0"
+                 style="stroke:black;stroke-opacity:1" />
+        </marker>
+    </defs>
+    <g
+         id="gate-swing"
+         style="display:inline">
+        <path
+             style="display:inline;fill:none;stroke:#797979;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
+             d="M 76.142493,56.1853 C 79.927587,33.369012 92.24646,19.284965 116.49474,17.407753"
+             id="gate-swing-left" />
+        <path
+             style="fill:none;stroke:#797979;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
+             d="M 71.95939,56.098975 C 68.174296,33.282688 55.855423,19.198641 31.607143,17.321428"
+             id="gate-swing-right" />
+    </g>
+    <g
+         id="rails"
+         style="display:inline">
+        <path
+             style="fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Post);marker-mid:url(#Post);marker-end:url(#Post);paint-order:normal"
+             d="M 7.9593898,128.09897 V 56.098975 H 31.95939 V 8.0989747"
+             id="railing-left" />
+        <path
+             style="fill:none;stroke:black;stroke-width:0.96;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+             d="m 31.95939,56.098975 h 40"
+             id="gate-left" />
+        <path
+             style="fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Post);marker-mid:url(#Post);marker-end:url(#Post);paint-order:normal"
+             d="M 140.14249,128.18529 V 56.1853 h -24 V 8.1852985"
+             id="railing-right" />
+        <path
+             style="fill:none;stroke:black;stroke-width:0.96;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+             d="M 116.14249,56.1853 H 76.142493"
+             id="gate-right" />
+    </g>
+</svg>
